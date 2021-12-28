@@ -1,0 +1,3 @@
+rootProject.name = 'AQA-2.4'
+include 'BDD'
+
