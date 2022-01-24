@@ -1,5 +1,6 @@
 package ru.netology.test;
 
+import com.codeborne.selenide.Configuration;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransferTest {
 
+    //DashboardPage dashboardPage;
+
     @BeforeEach
     void setup() {
         open("http://localhost:9999");
@@ -21,11 +24,12 @@ public class TransferTest {
         val verificationPage = loginPage.valid(authInfo);
         val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         verificationPage.validVerify(verificationCode);
+       // DashboardPage dashboardPage = verificationPage.validVerify(verificationCode);
+
     }
 
-    @AfterEach
-    void asserting() {
-        val dashboardPage = new DashboardPage();
+       void asserting() {
+       val dashboardPage = new DashboardPage();
         int firstCardBalance = dashboardPage.getCardBalance(DataHelper.firstCard().getCardId());
         int secondCardBalance = dashboardPage.getCardBalance(DataHelper.secondCard().getCardId());
         if (firstCardBalance != secondCardBalance) {
@@ -43,6 +47,7 @@ public class TransferTest {
 
     @Test
     void shouldTopUpFirstCard() {
+        asserting();
         val dashboardPage = new DashboardPage();
         int expectedFirstCardBalance = dashboardPage.getCardBalance(DataHelper.firstCard().getCardId()) + 1;
         int expectedSecondCardBalance = dashboardPage.getCardBalance(DataHelper.secondCard().getCardId()) - 1;
@@ -56,23 +61,25 @@ public class TransferTest {
 
     @Test
     void shouldTopUpSecondCard() {
+        asserting();
         val dashboardPage = new DashboardPage();
-        int expectedFirstCardBalance = 0;
-        int expectedSecondCardBalance = 20000;
+        var expectedFirstCardBalance = 0;
+        var expectedSecondCardBalance = 20000;
         val transferPage = dashboardPage.topUpCard(2);
         transferPage.transfer("10000", DataHelper.firstCard().getCardNumber());
-        int firstCardBalance = dashboardPage.getCardBalance(DataHelper.firstCard().getCardId());
-        int secondCardBalance = dashboardPage.getCardBalance(DataHelper.secondCard().getCardId());
+        var firstCardBalance = dashboardPage.getCardBalance(DataHelper.firstCard().getCardId());
+        var secondCardBalance = dashboardPage.getCardBalance(DataHelper.secondCard().getCardId());
         assertEquals(expectedFirstCardBalance, firstCardBalance);
         assertEquals(expectedSecondCardBalance, secondCardBalance);
     }
 
     @Test
     void shouldGetNotification() {
+        asserting();
         val dashboardPage = new DashboardPage();
         val transferPage = dashboardPage.topUpCard(2);
         transferPage.transfer("10005", DataHelper.firstCard().getCardNumber());
         val dashboardPageWithNotification = new DashboardPage();
-        dashboardPageWithNotification.getNotificationVisible();
+        transferPage.getNotificationVisible();
     }
 }
