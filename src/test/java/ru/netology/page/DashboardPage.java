@@ -1,10 +1,11 @@
 package ru.netology.page;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.withText;
+
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class DashboardPage {
     private SelenideElement heading = $("[data-test-id=dashboard]");
@@ -15,21 +16,17 @@ public class DashboardPage {
 
 
 
+
     public TransferPage topUpCard(int card) {
-        if (card == 1) {
-            actionCard1.click();
-        }
-        else if (card == 2) {
-            actionCard2.click();
-        }
+
+        ElementsCollection cards = $$(".list__item");
+        cards.get(card - 1).find("button").click();
         return new TransferPage();
+
     }
-/*
-    public TransferPage topUpCard(String id) {
-        $("[data-test-id='" + id + "']").find("button").click();
-        return new TransferPage();
-    }
-*/
+
+
+
     public int getCardBalance(String id) {
         val text = $("[data-test-id='" + id + "']").text();
         return extractBalance(text);
